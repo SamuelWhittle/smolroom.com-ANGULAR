@@ -1,0 +1,38 @@
+.logo {
+    margin: 2rem;
+}
+
+.logo > p {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.primary-header {
+    align-items: center;
+}
+
+.primary-navigation {
+    list-style: none;
+
+    --gap: clamp(1rem, 5vw, 3rem);
+    padding-block: 2rem;
+    padding-inline: clamp(1rem, 10vw, 10rem);
+
+    background: hsl(0 0% 0% / 0.75);
+}
+
+@supports (backdrop-filter: blur(1rem)) {
+    .primary-navigation {
+        background: hsl(0 0% 100% / 0.1);
+        backdrop-filter: blur(1rem);
+    }
+}
+
+.primary-navigation a {
+    text-decoration: none;
+}
+
+.primary-navigation a > [aria-hidden="true"] {
+    font-weight: 700;
+    margin-inline-end: .75em;
+}
