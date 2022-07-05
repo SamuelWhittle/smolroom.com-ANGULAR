@@ -63,6 +63,9 @@ export class LedMatrixDisplayInteractiveComponent implements AfterViewInit {
     // subscription used to listen for the service to push a new frame/picture/array of 3600 numbers
     private stateSubscription: any;
 
+    // Subscription used to listen for the service to push a new user count
+    private usersSubscription: any;
+
     // The interval at which this script will ping the server for updates
     private updateInterval: number;
 
@@ -74,8 +77,12 @@ export class LedMatrixDisplayInteractiveComponent implements AfterViewInit {
     private keyStrokes: number[] = new Array();
     private commandMatch: RegExp = /white|off/g;
 
+    // number of current Users
+    public users: string;
+
     constructor( @Inject(DOCUMENT) private document, private ledMatrixService: LEDMatrixService ) {
         this.stateSubscription = ledMatrixService.receivedState.subscribe((value) => this.receivedState(value));
+        this.usersSubscription = ledMatrixService.receivedUsers.subscribe((value) => this.receivedUsers(value));
     }
 
     ngAfterViewInit(): void {
@@ -103,6 +110,10 @@ export class LedMatrixDisplayInteractiveComponent implements AfterViewInit {
                 this.colors[colorsIndex].rgb[rgbaIndex] = state[ ( colorsIndex * 4 ) + rgbaIndex ];
             }
         }
+    }
+
+    receivedUsers(numUsers: string) {
+        this.users = numUsers;
     }
 
     //Toggle controls visibility

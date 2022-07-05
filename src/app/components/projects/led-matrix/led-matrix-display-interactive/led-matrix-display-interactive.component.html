@@ -13,7 +13,7 @@
     </div>
     <div #controls class="controls flex flex-dir-column easy-on-the-eyes" data-visible="false">
         <div class="controls-general flex flex-justify-center">
-            <span #users class="users">?</span> online
+            <span class="users">{{ users }}</span> online
             <button #offButton type="button" id="offButton" (click)="offButtonClick()">Off</button>
             <input #colorPicker type="color" id="colorPicker" value="#FF8800" style="width:25%;" (change)='colorPickerNewColor($event)'>
         </div>
