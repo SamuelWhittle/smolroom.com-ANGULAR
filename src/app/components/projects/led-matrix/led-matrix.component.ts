@@ -17,8 +17,6 @@ export class LedMatrixComponent implements AfterViewInit {
     constructor() {}
 
     ngAfterViewInit(): void {
-        console.log(this.containerHeight);
-        //document.documentElement.style.setProperty('--vh', `${this.vh}px`);
         this.setContainerHeight();
     }
 

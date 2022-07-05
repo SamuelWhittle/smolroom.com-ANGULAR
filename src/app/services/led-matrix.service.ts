@@ -13,7 +13,7 @@ export class LEDMatrixService {
     public websocket: WebSocket;
 
     // User counter
-    private users: number;
+    private users: string;
 
     // holds the pixel data displayed on the canvas
     private picture: number[];
@@ -31,6 +31,7 @@ export class LEDMatrixService {
     private noise: PerlinNoise;
 
     @Output() receivedState = new EventEmitter<number[]>();
+    @Output() receivedUsers = new EventEmitter<string>();
 
     constructor() {
         this.websocket = new WebSocket("wss://smolroom.com:8001/");
@@ -43,11 +44,10 @@ export class LEDMatrixService {
                     case 'state':
                         this.picture = data.picture;
                         this.receivedState.next(this.picture);
-                        //this.draw();
                         break;
                     case 'users':
-                        console.log('users received');
                         this.users = data.count.toString();
+                        this.receivedUsers.next(this.users);
                         break;
                     default:
                         console.error("unsupported event", data);
