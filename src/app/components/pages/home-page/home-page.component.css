@@ -35,12 +35,25 @@
     outline: 0.5rem solid #404054;
 }
 
+.main-content-item a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
 .main-content-item img {
     width: 100%;
     height: 100%;
     vertical-align: bottom;
     object-fit: cover;
 }
+
+.main-content-item led-matrix-display-only {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
 
 @media (max-width: 33rem) {
     .main-content {

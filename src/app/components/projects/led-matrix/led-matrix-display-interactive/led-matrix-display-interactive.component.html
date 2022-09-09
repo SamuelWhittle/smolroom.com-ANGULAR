@@ -1,17 +1,15 @@
-<div #divGrid 
+<div #divGrid long-press
     class='div-grid' 
     (mousedown)='mousedown($event)' 
     (mousemove)='mousemove($event)' 
-    (touchstart)='touchstart($event)' 
-    (touchmove)='touchmove($event)'
-    (contextmenu)='contextmenu($event)'>
-    <div #colorDiv 
-        *ngFor="let color of colors" 
-        [style]="'background: ' + color.getRGBString()"
-        [id]="color.id"
-        (contextmenu)='contextmenu($event)'>
-    </div>
-    <div #controls class="controls flex flex-dir-column easy-on-the-eyes" data-visible="false">
+    (touchstart)='processTouchstart($event)' 
+    (touchmove)='processTouchmove($event)'
+    (touchcancel)='processTouchend($event)'
+    (touchend)='processTouchend($event)'
+    (contextmenu)='contextmenu($event)'
+    (onLongPress)='toggleControls()'>
+    <div #controls class="controls flex flex-dir-column flex-justify-center easy-on-the-eyes" data-visible="true">
+        <p>Press Esc or long press on grid to toggle this menu.</p>
         <div class="controls-general flex flex-justify-center">
             <span class="users">{{ users }}</span> online
             <button #offButton type="button" id="offButton" (click)="offButtonClick()">Off</button>
@@ -27,5 +25,11 @@
         <div class="controls-noise flex flex-justify-center">
             <button #sendNoiseButton type="button" id="sendNoiseButton" (click)='sendNoise()'>Send Noise Loop</button>
         </div>
+    </div>
+    <div #colorDiv 
+        *ngFor="let color of colors" 
+        [style]="'background: ' + color.getRGBString()"
+        [id]="color.id"
+        (contextmenu)='contextmenu($event)'>
     </div>
 </div>

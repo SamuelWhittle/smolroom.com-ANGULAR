@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ViewChild, ElementRef, ViewChildren, QueryList, HostListener, Inject } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef, ViewChildren, QueryList, HostListener, HostBinding, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 
 import { LEDMatrixService } from '../../../../services/led-matrix.service';
@@ -20,10 +20,11 @@ export class LedMatrixDisplayInteractiveComponent implements AfterViewInit {
     // control over the Controls Div
     @ViewChild('controls') controls: ElementRef;
 
-    // Listen fot keyup for esc
+    // Listen for keyup for esc
     @HostListener('window:keyup', ['$event']) keyUp(event: KeyboardEvent) {
         switch(event.keyCode) {
             case 27:
+                console.log("Esc");
                 this.toggleControls();
                 break;
         }
@@ -45,8 +46,8 @@ export class LedMatrixDisplayInteractiveComponent implements AfterViewInit {
         this.mouseup();
     }
 
-    @HostListener('window:touchend', []) windowOnTouchend() {
-        this.touchend();
+    @HostListener('window:touchend', ['$event']) windowOnTouchend() {
+        this.processTouchend(event);
     }
 
     // 900 colors coresponding to the 30x30 grid
@@ -56,6 +57,10 @@ export class LedMatrixDisplayInteractiveComponent implements AfterViewInit {
 
     // are they clicking?
     public mouseIsDown: boolean = false;
+
+    public pressStartedInMenu: boolean;
+
+    public tpCache: any = new Array();
 
     // draw with this color
     public currentColor: Color = new Color(255, 128, 0);
@@ -67,10 +72,10 @@ export class LedMatrixDisplayInteractiveComponent implements AfterViewInit {
     private usersSubscription: any;
 
     // The interval at which this script will ping the server for updates
-    private updateInterval: number;
+    private updateInterval: any;
 
     // are the controls visible?
-    public controlsVisible: boolean = false;
+    public controlsVisible: boolean = true;
 
     // Command Line Variables
     // array of keyStroke IDs
@@ -139,6 +144,9 @@ export class LedMatrixDisplayInteractiveComponent implements AfterViewInit {
     // mouse down
     mousedown(event: any) {
         this.mouseIsDown = true;
+        if(this.controlsVisible) {
+            this.pressStartedInMenu = true;
+        }
         this.canvasDrag(event);
     }
 
@@ -152,10 +160,28 @@ export class LedMatrixDisplayInteractiveComponent implements AfterViewInit {
     // mouse up
     mouseup() {
         this.mouseIsDown = false;
+        this.pressStartedInMenu = false;
     }
 
     // touch start
-    touchstart(event: any) {
+    processTouchstart(event: any) {
+        //event.preventDefault();
+
+        for (let i = 0; i < event.targetTouches.length; i++) {
+            this.tpCache.push(event.targetTouches[i]);
+        }
+
+        switch (event.targetTouches.length) {
+            case 1:
+                this.handleOneTouch(event); break;
+            case 2:
+                this.handleTwoTouches(event); break;
+            default:
+                this.gestureNotSupported(event); break;
+        }
+    }
+
+    handleOneTouch(event: any) {
         var touch = event.touches[0];
 
         var mouseEvent = new MouseEvent('mousedown', {
@@ -167,8 +193,18 @@ export class LedMatrixDisplayInteractiveComponent implements AfterViewInit {
         this.divGrid.nativeElement.dispatchEvent(mouseEvent);
     }
 
+    handleTwoTouches(event: any) {
+        console.log("Handle two touches.");
+    }
+
+    gestureNotSupported(event: any) {
+        console.log("Unsupported Gesture");
+    }
+
     // touch move
-    touchmove(event: any) {
+    processTouchmove(event: any) {
+        event.preventDefault();
+
         var touch = event.touches[0];
 
         //var clientX = touch.clientX + canvas.offsetLeft;
@@ -184,10 +220,11 @@ export class LedMatrixDisplayInteractiveComponent implements AfterViewInit {
     }
 
     // touch end
-    touchend() {
-        //var mouseEvent = new MouseEvent("mouseup", {});
-        //window.dispatchEvent(mouseEvent);
-        this.mouseIsDown = false;
+    processTouchend(event: any) {
+        var mouseEvent = new MouseEvent("mouseup", {});
+        window.dispatchEvent(mouseEvent);
+        //this.mouseIsDown = false;
+        //this.pressStartedInMenu = false;
     }
 
     // Block the default right click behavior
@@ -197,9 +234,11 @@ export class LedMatrixDisplayInteractiveComponent implements AfterViewInit {
 
     // get mouse location and change colors accordingly
     canvasDrag(event: any) {
-        let selectedDiv: HTMLElement = (document.elementFromPoint(event.clientX, event.clientY) as HTMLElement);
-        let singleDimIndex : number = parseInt(selectedDiv.id);
-        this.ledMatrixService.setPixel(singleDimIndex, (event.buttons === 1) ? this.currentColor : new Color(0, 0, 0));
+        if(!this.pressStartedInMenu) {
+            let selectedDiv: HTMLElement = (document.elementFromPoint(event.clientX, event.clientY) as HTMLElement);
+            let singleDimIndex : number = parseInt(selectedDiv.id);
+            this.ledMatrixService.setPixel(singleDimIndex, (event.buttons === 1) ? this.currentColor : new Color(0, 0, 0));
+        }
     }
 
     // set all to black
