@@ -52,24 +52,24 @@ export class LedMatrixDisplayOnlyComponent implements AfterViewInit {
 
     receivedState(state: number[]) {
         for( let colorsIndex = 0; colorsIndex < 900; colorsIndex ++ ) {
-            for( let rgbaIndex = 0; rgbaIndex < 4; rgbaIndex ++ ){
-                this.colors[colorsIndex].rgb[rgbaIndex] = state[ ( colorsIndex * 4 ) + rgbaIndex ];
-            }
-        }
-    }
+          for( let rgbaIndex = 0; rgbaIndex < 4; rgbaIndex ++ ){
+              this.colors[colorsIndex].rgb[rgbaIndex] = state[ ( colorsIndex * 4 ) + rgbaIndex ];
+          }
+      }
+  }
 
-    // pass in an array of ElementRefs and the function wil move them to the correct locations
-    applyGridToDivs(divs: ElementRef[]) {
-        divs.map((div, index) => {
-            let dims: number[] = this.getTwoDimsIndexFromOneDim(index, 30);
-            div.nativeElement.style.gridColumn = dims[0] + 1;
-            div.nativeElement.style.gridRow = dims[1] + 1;
-        });
-    }
+  // pass in an array of ElementRefs and the function wil move them to the correct locations
+  applyGridToDivs(divs: ElementRef[]) {
+      divs.map((div, index) => {
+          let dims: number[] = this.getTwoDimsIndexFromOneDim(index, 30);
+          div.nativeElement.style.gridColumn = dims[0] + 1;
+          div.nativeElement.style.gridRow = dims[1] + 1;
+      });
+  }
 
-    // given a single dimensional index and the length of the second dimension, return the equivalent two dimensional index
-    getTwoDimsIndexFromOneDim(oneDimIndex: number, secondDimLength: number) {
-        return [Math.floor(oneDimIndex / secondDimLength), oneDimIndex % secondDimLength];
+  // given a single dimensional index and the length of the second dimension, return the equivalent two dimensional index
+  getTwoDimsIndexFromOneDim(oneDimIndex: number, secondDimLength: number) {
+      return [oneDimIndex % secondDimLength, Math.floor(oneDimIndex / secondDimLength)];
     }
 
     // given a first and second dimension index and the length of the second dimension, return the equivalent single dimensional index

@@ -133,7 +133,7 @@ export class LedMatrixDisplayInteractiveComponent implements AfterViewInit {
 
     // given a single dimensional index and the length of the second dimension, return the equivalent two dimensional index
     oneDimIndexToTwoDim(oneDimIndex: number, secondDimLength: number) {
-        return [Math.floor(oneDimIndex / secondDimLength), oneDimIndex % secondDimLength];
+        return [oneDimIndex % secondDimLength, Math.floor(oneDimIndex / secondDimLength)];
     }
 
     // given a first and second dimension index and the length of the second dimension, return the equivalent single dimensional index
@@ -272,7 +272,10 @@ export class LedMatrixDisplayInteractiveComponent implements AfterViewInit {
     // process keystroke history for valid commands
     processKeyStrokes() {
         let tempString = String.fromCharCode(...this.keyStrokes);
-        let result = tempString.match(this.commandMatch);
+
+        this.ledMatrixService.sendCommand(tempString);
+        
+        /*let result = tempString.match(this.commandMatch);
 
         if(result !== null) {
             switch( result[ result.length - 1 ] ) {
@@ -283,7 +286,7 @@ export class LedMatrixDisplayInteractiveComponent implements AfterViewInit {
                     this.ledMatrixService.allOff();
                 break;
             }
-        }
+        }*/
 
         this.keyStrokes = new Array();
     }

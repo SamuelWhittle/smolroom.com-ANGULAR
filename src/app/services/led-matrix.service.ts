@@ -102,6 +102,10 @@ export class LEDMatrixService {
         this.websocket.send(JSON.stringify({action: 'frame', frame: frame}));
         this.frameBuffer.fill(0);
     }
+
+    sendCommand(command: string) {
+        this.websocket.send(JSON.stringify({action: 'command', command: command}));
+    }
   
     // Send frame in the frameBuffer to the server
     sendFrameBuffer() {
