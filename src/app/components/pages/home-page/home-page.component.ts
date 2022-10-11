@@ -15,9 +15,6 @@ export class HomePageComponent implements OnInit {
 
   projectList: Project[] = PROJECTLIST;
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
 }
